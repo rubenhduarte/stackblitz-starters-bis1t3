@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Consulta de Legajo</title>
+</head>
+<body>
+  <h1>Consulta de Legajo de Empleado</h1>
+  <label for="dni">Ingrese DNI:</label>
+  <input type="text" id="dni" name="dni">
+  <button onclick="consultarLegajo()">Consultar</button>
+  <button onclick="limpiar()">Limpiar</button>
+
+  <div id="resultado"></div>
+
+  <script>
+    function consultarLegajo() {
+      const dni = document.getElementById('dni').value;
+      fetch('/consulta', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `dni=${dni}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          document.getElementById('resultado').innerText = data.error;
+        } else {
+          document.getElementById('resultado').innerText = `
+            Nombre Completo: ${data.nombreCompleto}
+            Fecha de Nacimiento: ${data.fechaNacimiento}
+            Número de Legajo: ${data.numeroLegajo}
+          `;
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    }
+
+    function limpiar() {
+      document.getElementById('dni').value = '';
+      document.getElementById('resultado').innerText = '';
+    }
+  </script>
+</body>
+</html>
